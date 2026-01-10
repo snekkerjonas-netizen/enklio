@@ -5,33 +5,37 @@ import '../ui/completion_screen.dart';
 import 'flow_coordinator.dart';
 
 class AppRoot extends StatefulWidget {
-  final FlowCoordinator flow;
-  const AppRoot({super.key, required this.flow});
+  const AppRoot({super.key});
 
   @override
   State<AppRoot> createState() => _AppRootState();
 }
 
 class _AppRootState extends State<AppRoot> {
-  int screen = 0;
+  late final FlowCoordinator flow;
+  int step = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    flow = FlowCoordinator(
+      onStart: () => setState(() => step = 1),
+      onStepDone: () => setState(() => step = 2),
+      onComplete: () => setState(() => step = 3),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
-
-    if (screen == 0) {
-      body = StartScreen(flow: widget.flow);
-    } else if (screen == 1) {
-      body = StepScreen(
-        stepText: 'Steg 1',
-        onNext: () => setState(() => screen = 2),
-      );
-    } else {
-      body = CompletionScreen(
-        onDone: () => setState(() => screen = 0),
-      );
-    }
-
-    return MaterialApp(home: body);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: switch (step) {
+        0 => StartScreen(flow: flow),
+        1 => StepScreen(flow: flow),
+        2 => CompletionScreen(flow: flow),
+        _ => const SizedBox.shrink(),
+      },
+    );
   }
 }
