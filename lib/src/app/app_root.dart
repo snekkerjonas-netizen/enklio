@@ -17,29 +17,21 @@ class _AppRootState extends State<AppRoot> {
 
   @override
   Widget build(BuildContext context) {
+    Widget body;
+
     if (screen == 0) {
-      return MaterialApp(
-        home: StartScreen(
-          flow: widget.flow,
-        ),
+      body = StartScreen(flow: widget.flow);
+    } else if (screen == 1) {
+      body = StepScreen(
+        stepText: 'Steg 1',
+        onNext: () => setState(() => screen = 2),
+      );
+    } else {
+      body = CompletionScreen(
+        onDone: () => setState(() => screen = 0),
       );
     }
 
-    if (screen == 1) {
-      return const MaterialApp(
-        home: StepScreen(
-          stepText: 'Steg 1',
-          onNext: _noop,
-        ),
-      );
-    }
-
-    return const MaterialApp(
-      home: CompletionScreen(
-        onDone: _noop,
-      ),
-    );
+    return MaterialApp(home: body);
   }
-
-  static void _noop() {}
 }
