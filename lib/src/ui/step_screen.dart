@@ -23,6 +23,7 @@ class _StepScreenState extends State<StepScreen> {
   int seconds = 0;
 
   void showInfo(String text) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
@@ -45,11 +46,14 @@ class _StepScreenState extends State<StepScreen> {
           duration: 10,
           onTick: (s) => setState(() => seconds = s),
           onDone: () {
-            showInfo('Steget kan avsluttes når du er klar');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showInfo('Steget kan avsluttes når du er klar');
+            });
           },
         )..start();
 
         Del08Store.save(step);
+
         setState(() {
           currentStep = step;
           seconds = 0;
@@ -59,19 +63,24 @@ class _StepScreenState extends State<StepScreen> {
         timer?.stop();
         screenAwake.disable();
         Del08Store.clear();
-        showInfo('Oppgaven er fullført');
-        widget.flow.complete();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showInfo('Oppgaven er fullført');
+          widget.flow.complete();
+        });
       },
     );
 
-    final saved = Del08Store.load();
-    if (saved != null) {
-      setState(() => currentStep = saved.currentStep);
-      showInfo('Gjenopptok tidligere steg');
-    } else {
-      controller.start();
-      showInfo('Startet nytt steg');
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final saved = Del08Store.load();
+      if (saved != null) {
+        setState(() => currentStep = saved.currentStep);
+        showInfo('Gjenopptok tidligere steg');
+      } else {
+        controller.start();
+        showInfo('Startet nytt steg');
+      }
+    });
   }
 
   @override
@@ -114,11 +123,6 @@ class _StepScreenState extends State<StepScreen> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: controller.next,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
                   child: const Text(
                     'Neste',
                     style: TextStyle(fontSize: 18),
