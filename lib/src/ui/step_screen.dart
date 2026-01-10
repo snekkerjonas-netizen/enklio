@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 
-class StepScreen extends StatelessWidget {
-  final String stepText;
-  final VoidCallback onNext;
+import 'package:flutter/material.dart';
+import '../app/flow_coordinator.dart';
 
-  const StepScreen({
-    super.key,
-    required this.stepText,
-    required this.onNext,
-  });
+class StepScreen extends StatelessWidget {
+  final FlowCoordinator flow;
+
+  const StepScreen({super.key, required this.flow});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(stepText, textAlign: TextAlign.center),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: onNext,
-            child: const Text('Neste'),
-          ),
-        ],
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: flow.stepDone,
+          child: const Text('Neste steg'),
+        ),
       ),
     );
   }
