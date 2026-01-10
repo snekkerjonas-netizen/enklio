@@ -36,20 +36,18 @@ class FlowCoordinator {
 
   /// Kalles når Del 1 er ferdig
   class FlowCoordinator {
-    final VoidCallback? onStart;
-    final VoidCallback? onStepDone;
-    final VoidCallback? onComplete;
+    final void Function() onStart;
+    final void Function() onStepDone;
+    final void Function() onComplete;
 
-    FlowCoordinator({this.onStart, this.onStepDone, this.onComplete});
+    FlowCoordinator({
+      required this.onStart,
+      required this.onStepDone,
+      required this.onComplete,
+    });
 
-    void start() {
-      onStart?.call();
-    }
-    void stepDone() {
-      onStepDone?.call();
-    }
-    void complete() {
-      onComplete?.call();
-    }
+    void start() => onStart();
+    void stepDone() => onStepDone();
+    void complete() => onComplete();
   }
   }
