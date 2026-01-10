@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
-class CompletionScreen extends StatelessWidget {
-  final VoidCallback onDone;
+import 'package:flutter/material.dart';
+import '../app/flow_coordinator.dart';
 
-  const CompletionScreen({
-    super.key,
-    required this.onDone,
-  });
+class CompletionScreen extends StatelessWidget {
+  final FlowCoordinator flow;
+
+  const CompletionScreen({super.key, required this.flow});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: onDone,
-        child: const Text('Ferdig'),
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: flow.complete,
+          child: const Text('Ferdig'),
+        ),
       ),
     );
   }
