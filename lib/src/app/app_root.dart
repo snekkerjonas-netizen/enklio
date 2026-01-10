@@ -18,7 +18,6 @@ class _AppRootState extends State<AppRoot> {
   @override
   void initState() {
     super.initState();
-
     flow = FlowCoordinator(
       onStart: () => setState(() => step = 1),
       onStepDone: () => setState(() => step = 2),
@@ -32,8 +31,8 @@ class _AppRootState extends State<AppRoot> {
       debugShowCheckedModeBanner: false,
       home: switch (step) {
         0 => StartScreen(flow: flow),
-        1 => StepScreen(flow: flow),
-        2 => CompletionScreen(flow: flow),
+        1 => StepScreen(stepText: 'Steg 1', onNext: flow.stepDone),
+        2 => CompletionScreen(onDone: flow.complete),
         _ => const SizedBox.shrink(),
       },
     );

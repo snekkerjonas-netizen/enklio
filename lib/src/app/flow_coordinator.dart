@@ -30,41 +30,26 @@ class FlowCoordinator {
 
   /// Starter hele flyten
   void start() {
-    del01.start();
+    // Del01 expects an entity-based execute
+    del01.execute(Del01Entity(id: 'auto'));
   }
 
   /// Kalles når Del 1 er ferdig
-  void onDel01Completed() {
-    del02.start();
-  }
+  class FlowCoordinator {
+    final VoidCallback? onStart;
+    final VoidCallback? onStepDone;
+    final VoidCallback? onComplete;
 
-  /// Kalles når Del 2 er ferdig
-  void onDel02Completed() {
-    del03.start();
-  }
+    FlowCoordinator({this.onStart, this.onStepDone, this.onComplete});
 
-  /// Kalles når Del 3 er ferdig
-  void onDel03Completed() {
-    del04.start();
+    void start() {
+      onStart?.call();
+    }
+    void stepDone() {
+      onStepDone?.call();
+    }
+    void complete() {
+      onComplete?.call();
+    }
   }
-
-  /// Kalles når Del 4 er ferdig og klar til gjennomføring
-  void onDel04Completed() {
-    del05.start();
   }
-
-  /// Kalles når stegvis gjennomføring er ferdig
-  void onDel05Completed() {
-    del06.complete();
-  }
-
-  /// Kalles når avslutning er ferdig
-  void onDel06Completed() {
-    del07.triggerAutoReturn();
-  }
-
-  /// Kalles når retur til start er ferdig
-  void onDel07Completed() {
-    del08.clearTemporaryProgress();
-  }
-}

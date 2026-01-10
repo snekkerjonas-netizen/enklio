@@ -10,12 +10,10 @@ class CompletionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: onDone,
-          child: const Text('Ferdig'),
-        ),
+    return Center(
+      child: ElevatedButton(
+        onPressed: onDone,
+        child: const Text('Ferdig'),
       ),
     );
   }
