@@ -8,12 +8,12 @@ class StartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          flow.start();
-        },
-        child: const Text('Start'),
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: flow.start,
+          child: const Text('Start'),
+        ),
       ),
     );
   }
