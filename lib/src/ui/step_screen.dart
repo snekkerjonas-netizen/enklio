@@ -13,7 +13,7 @@ class StepScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: flow.stepDone,
+          onPressed: flow.next,
           child: const Text('Neste steg'),
         ),
       ),
