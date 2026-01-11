@@ -1,38 +1,45 @@
 import 'package:flutter/material.dart';
+import 'flow_coordinator.dart';
 import '../ui/start_screen.dart';
 import '../ui/step_screen.dart';
 import '../ui/completion_screen.dart';
-import 'flow_coordinator.dart';
 
 class AppRoot extends StatefulWidget {
-  const AppRoot({super.key});
+  final FlowCoordinator flow;
+
+  const AppRoot({super.key, required this.flow});
 
   @override
   State<AppRoot> createState() => _AppRootState();
 }
 
 class _AppRootState extends State<AppRoot> {
-  late final FlowCoordinator flow;
   int step = 0;
 
   @override
   void initState() {
     super.initState();
-    flow = FlowCoordinator(
-      onStart: () => setState(() => step = 1),
-      onStepDone: () => setState(() => step = 2),
-      onComplete: () => setState(() => step = 3),
-    );
+
+    widget.flow.onStart = () {
+      setState(() => step = 1);
+    };
+
+    widget.flow.onNext = () {
+      setState(() => step = 2);
+    };
+
+    widget.flow.onComplete = () {
+      setState(() => step = 0);
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: switch (step) {
-        0 => StartScreen(flow: flow),
-        1 => StepScreen(stepText: 'Steg 1', onNext: flow.stepDone),
-        2 => CompletionScreen(onDone: flow.complete),
+        0 => StartScreen(onStart: widget.flow.start),
+        1 => StepScreen(flow: widget.flow),
+        2 => CompletionScreen(flow: widget.flow),
         _ => const SizedBox.shrink(),
       },
     );
