@@ -4,44 +4,30 @@ import '../ui/start_screen.dart';
 import '../ui/step_screen.dart';
 import '../ui/completion_screen.dart';
 
-class AppRoot extends StatefulWidget {
+class AppRoot extends StatelessWidget {
   final FlowCoordinator flow;
 
   const AppRoot({super.key, required this.flow});
 
   @override
-  State<AppRoot> createState() => _AppRootState();
-}
-
-class _AppRootState extends State<AppRoot> {
-  int step = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    widget.flow.onStart = () {
-      setState(() => step = 1);
-    };
-
-    widget.flow.onNext = () {
-      setState(() => step = 2);
-    };
-
-    widget.flow.onComplete = () {
-      setState(() => step = 0);
-    };
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: switch (step) {
-        0 => StartScreen(onStart: widget.flow.start),
-        1 => StepScreen(flow: widget.flow),
-        2 => CompletionScreen(flow: widget.flow),
-        _ => const SizedBox.shrink(),
-      },
+      home: AnimatedBuilder(
+        animation: flow,
+        builder: (context, child) {
+          if (flow.isOnStartScreen) {
+            return StartScreen(coordinator: flow);
+          } else if (flow.isFinished) {
+            return CompletionScreen(flow: flow);
+          } else if (flow.currentTask != null) {
+            return StepScreen(
+              task: flow.currentTask!,
+              onCompleted: flow.next,
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

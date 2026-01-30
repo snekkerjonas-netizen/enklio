@@ -10,6 +10,7 @@ class FlowCoordinator extends ChangeNotifier {
   int get currentIndex => _currentIndex;
   Task? get currentTask => _currentIndex >= 0 && _currentIndex < tasks.length ? tasks[_currentIndex] : null;
   bool get isFinished => _currentIndex >= tasks.length;
+  bool get isOnStartScreen => _currentIndex == -1;
 
   void start() {
     _currentIndex = 0;
@@ -18,6 +19,11 @@ class FlowCoordinator extends ChangeNotifier {
 
   void next() {
     _currentIndex++;
+    notifyListeners();
+  }
+
+  void complete() {
+    _currentIndex = -1;
     notifyListeners();
   }
 }

@@ -1,6 +1,13 @@
 class Task {
+  final String? id;
   final String title;
-  final int durationSeconds;
+  final Duration duration;
+  final Duration bufferDuration;
 
-  Task({required this.title, required this.durationSeconds});
+  Task({
+    this.id,
+    required this.title,
+    required this.duration,
+    this.bufferDuration = Duration.zero,
+  });
 }
