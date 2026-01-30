@@ -8,6 +8,6 @@ class Task {
     this.id,
     required this.title,
     required this.duration,
-    this.bufferDuration = Duration.zero,
+    this.bufferDuration = const Duration.zero,
   });
 }

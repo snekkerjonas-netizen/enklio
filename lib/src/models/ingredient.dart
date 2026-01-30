@@ -15,9 +15,11 @@ class Ingredient {
   @override
   String toString() {
     final parts = [amount];
-    if (unit != null && unit!.isNotEmpty) parts.add(unit!);
+    if (unit?.isNotEmpty ?? false) {
+      parts.add(unit!);
+    }
     parts.add(name);
-    if (preparation != null && preparation!.isNotEmpty) {
+    if (preparation?.isNotEmpty ?? false) {
       parts.add('($preparation)');
     }
     return parts.join(' ');

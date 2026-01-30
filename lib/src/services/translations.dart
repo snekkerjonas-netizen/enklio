@@ -1,5 +1,5 @@
-/// Simple translation service for Norwegian strings
-/// Based on TS translationService.ts
+/// Oversettelsestjeneste for norske strenger
+/// Basert på TS translationService.ts
 class Translations {
   static const String locale = 'no';
 

@@ -1,6 +1,6 @@
 # Enklio — Kortoversikt
 
-Dette er et Flutter-prosjekt for en oppskrift-/kokeassistent-app med fokus på en ren arkitektur.
+Dette er et Flutter-prosjekt for en oppskrift- og kokeassistent-app med fokus på en ren arkitektur.
 
 ## Arkitektur
 
