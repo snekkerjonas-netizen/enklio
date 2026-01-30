@@ -1,9 +1,23 @@
-class FlowCoordinator {
-  late void Function() onStart;
-  late void Function() onNext;
-  late void Function() onComplete;
+import 'package:flutter/material.dart';
+import '../features/task.dart';
 
-  void start() => onStart();
-  void next() => onNext();
-  void complete() => onComplete();
+class FlowCoordinator extends ChangeNotifier {
+  final List<Task> tasks;
+  int _currentIndex = -1; // -1 betyr StartScreen
+
+  FlowCoordinator({required this.tasks});
+
+  int get currentIndex => _currentIndex;
+  Task? get currentTask => _currentIndex >= 0 && _currentIndex < tasks.length ? tasks[_currentIndex] : null;
+  bool get isFinished => _currentIndex >= tasks.length;
+
+  void start() {
+    _currentIndex = 0;
+    notifyListeners();
+  }
+
+  void next() {
+    _currentIndex++;
+    notifyListeners();
+  }
 }
