@@ -1,136 +1,65 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../app/flow_coordinator.dart';
-import '../features/del_05/del_05.dart';
-import '../features/del_05/timer_controller.dart';
-import '../features/del_05/screen_awake_controller.dart';
-import '../features/del_08/del_08.dart';
+import '../features/task.dart';
 
 class StepScreen extends StatefulWidget {
-  final FlowCoordinator flow;
+  final Task task;
+  final VoidCallback onCompleted;
 
-  const StepScreen({super.key, required this.flow});
+  const StepScreen({super.key, required this.task, required this.onCompleted});
 
   @override
   State<StepScreen> createState() => _StepScreenState();
 }
 
 class _StepScreenState extends State<StepScreen> {
-  late final Del05Controller controller;
-  final ScreenAwakeController screenAwake = ScreenAwakeController();
-  StepTimer? timer;
-
-  String currentStep = '';
-  int seconds = 0;
-
-  void showInfo(String text) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(text),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
+  late int _timeLeft;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _timeLeft = widget.task.duration.inSeconds + widget.task.bufferDuration.inSeconds;
+    _startTimer();
+  }
 
-    screenAwake.enable();
-
-    controller = Del05Controller(
-      onStepChanged: (step) {
-        timer?.stop();
-        timer = StepTimer(
-          duration: 10,
-          onTick: (s) => setState(() => seconds = s),
-          onDone: () {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showInfo('Steget kan avsluttes når du er klar');
-            });
-          },
-        )..start();
-
-        Del08Store.save(step);
-
-        setState(() {
-          currentStep = step;
-          seconds = 0;
-        });
-      },
-      onFinished: () {
-        timer?.stop();
-        screenAwake.disable();
-        Del08Store.clear();
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showInfo('Oppgaven er fullført');
-          widget.flow.complete();
-        });
-      },
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final saved = Del08Store.load();
-      if (saved != null) {
-        setState(() => currentStep = saved.currentStep);
-        showInfo('Gjenopptok tidligere steg');
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_timeLeft > 0) {
+        setState(() => _timeLeft--);
       } else {
-        controller.start();
-        showInfo('Startet nytt steg');
+        _timer?.cancel();
       }
     });
   }
 
   @override
   void dispose() {
-    timer?.stop();
-    screenAwake.disable();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                currentStep,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 26,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Tid: $seconds s',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: controller.next,
-                  child: const Text(
-                    'Neste',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(widget.task.title, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 40),
+            Text(
+              '${(_timeLeft ~/ 60).toString().padLeft(2, '0')}:${(_timeLeft % 60).toString().padLeft(2, '0')}',
+              style: const TextStyle(fontSize: 80, fontWeight: FontWeight.w300),
+            ),
+            const SizedBox(height: 60),
+            ElevatedButton(
+              onPressed: _timeLeft == 0 ? widget.onCompleted : null,
+              style: ElevatedButton.styleFrom(minimumSize: const Size(200, 60)),
+              child: const Text('NESTE'),
+            ),
+          ],
         ),
       ),
     );
