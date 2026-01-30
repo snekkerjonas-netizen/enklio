@@ -3,7 +3,7 @@ class Task {
   final Duration duration;
   final Duration bufferDuration;
 
-  Task({
+  const Task({
     required this.title,
     required this.duration,
     this.bufferDuration = const Duration(seconds: 0),
