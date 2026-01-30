@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import '../app/flow_coordinator.dart';
 
 class CompletionScreen extends StatelessWidget {

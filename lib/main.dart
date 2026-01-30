@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'src/app/app_root.dart';
 import 'src/app/flow_coordinator.dart';
-import 'src/features/del_01/del_01.dart';
-import 'src/features/del_02/del_02.dart';
-import 'src/features/del_03/del_03.dart';
-import 'src/features/del_04/del_04.dart';
-import 'src/features/del_05/del_05.dart';
-import 'src/features/del_06/del_06.dart';
-import 'src/features/del_07/del_07.dart';
-import 'src/features/del_08/del_08.dart';
+import 'src/features/task.dart';
 
 void main() {
-  final flow = FlowCoordinator(
-    del01: Del01UseCaseImpl(),
-    del02: Del02UseCaseImpl(),
-    del03: Del03UseCaseImpl(),
-    del04: Del04UseCaseImpl(),
-    del05: Del05UseCaseImpl(),
-    del06: Del06UseCaseImpl(),
-    del07: Del07UseCaseImpl(),
-    del08: Del08UseCaseImpl(),
-  );
+  // Demo tasks for testing the flow
+  final demoTasks = [
+    Task(
+      id: '1',
+      title: 'Oppvarming',
+      duration: const Duration(minutes: 5),
+      bufferDuration: const Duration(seconds: 30),
+    ),
+    Task(
+      id: '2',
+      title: 'Hovedøvelse',
+      duration: const Duration(minutes: 20),
+      bufferDuration: const Duration(minutes: 1),
+    ),
+    Task(
+      id: '3',
+      title: 'Nedkjøling',
+      duration: const Duration(minutes: 5),
+    ),
+  ];
+
+  final flow = FlowCoordinator(tasks: demoTasks);
 
   runApp(AppRoot(flow: flow));
 }

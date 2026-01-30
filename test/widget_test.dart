@@ -8,14 +8,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:enklio/main.dart';
+import 'package:enklio/src/app/app_root.dart';
+import 'package:enklio/src/app/flow_coordinator.dart';
+import 'package:enklio/src/features/task.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App root renders smoke test', (WidgetTester tester) async {
     // Build our app root and trigger a frame.
-    await tester.pumpWidget(const AppRoot());
+    final coordinator = FlowCoordinator(
+      tasks: [
+        Task(title: 'Test Task', duration: const Duration(minutes: 1)),
+      ],
+    );
+    
+    await tester.pumpWidget(AppRoot(flow: coordinator));
 
-    // No UI assertions here — widget test uses minimal root.
+    // Verify that app renders
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
