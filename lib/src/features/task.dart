@@ -1,6 +1,11 @@
 class Task {
   final String title;
-  final int durationSeconds;
+  final Duration duration;
+  final Duration bufferDuration;
 
-  Task({required this.title, required this.durationSeconds});
+  Task({
+    required this.title,
+    required this.duration,
+    this.bufferDuration = const Duration(seconds: 0),
+  });
 }
